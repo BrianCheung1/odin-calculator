@@ -1,0 +1,24 @@
+button {
+  width: 20%; 
+  aspect-ratio: 1 / .75;
+  height: auto;
+  margin: 2px;
+  box-sizing: border-box;
+  padding: 10px; /* Adjust padding as needed */
+}
+
+.display {
+  text-align: center;
+  font-size: 24px;
+  border: 2px solid black;
+  margin-bottom: 24px;
+  padding: 24px;
+}
+
+.button-container {
+  display: flex;
+  flex-wrap: wrap;
+  border: 2px solid black;
+  padding: 20px;
+  justify-content: space-between;
+}
