@@ -11,10 +11,10 @@ function multiply(a, b) {
 }
 
 function divide(a, b) {
-  if (a === 0 || b === 0) {
-    return "Can't divide by 0"
+  if (b === 0) {
+    return "Can't Divide By Zero"
   }
-  return a / b
+  return Math.round((a / b) * 100) / 100
 }
 
 let firstNumber = 0
@@ -24,8 +24,6 @@ let operatorClicked = false
 let isFirstNumber = true
 
 function operate(first, second, operator) {
-  first = parseInt(first)
-  second = parseInt(second)
   if (operator == "+") {
     return add(first, second)
   } else if (operator == "-") {
@@ -44,6 +42,12 @@ displayText.textContent = ""
 display.appendChild(displayText)
 container.appendChild(display)
 
+const digitContainer = document.createElement("div")
+digitContainer.classList.add("digit-container")
+
+const operatorContainer = document.createElement("div")
+operatorContainer.classList.add("operator-container")
+
 const buttonContainer = document.createElement("div")
 buttonContainer.classList.add("button-container")
 
@@ -59,15 +63,22 @@ const equalButton = document.createElement("button")
 equalButton.textContent = "="
 const clearButton = document.createElement("button")
 clearButton.textContent = "CLEAR"
+const decimalButton = document.createElement("button")
+decimalButton.textContent = "."
 
 function determineFirstNumber() {
   if (isFirstNumber) {
-    firstNumber = parseInt(displayText.textContent)
+    if (displayText.textContent !== "") {
+      if (display.textContent === "Can't Divide By Zero") {
+        firstNumber = 0
+      } else {
+        firstNumber = parseFloat(displayText.textContent)
+      }
+    }
   } else if (!isFirstNumber) {
-    secondNumber = parseInt(displayText.textContent)
+    secondNumber = parseFloat(displayText.textContent)
     let result = operate(firstNumber, secondNumber, operator)
-    displayText.textContent = Math.round(result * 100) / 100
-    console.log(`result ${result}`)
+    displayText.textContent = result
     firstNumber = result
     secondNumber = 0
   }
@@ -80,6 +91,7 @@ function clearAll() {
   secondNumber = 0
   operator = ""
   isFirstNumber = true
+  decimalButton.disabled = false
 }
 
 plusButton.addEventListener("click", () => {
@@ -106,15 +118,18 @@ clearButton.addEventListener("click", () => {
   displayText.textContent = ""
   clearAll()
 })
+decimalButton.addEventListener("click", () => {
+  displayText.textContent += "."
+  decimalButton.disabled = true
+})
+operatorContainer.appendChild(plusButton)
+operatorContainer.appendChild(subtractButton)
+operatorContainer.appendChild(multiplyButton)
+operatorContainer.appendChild(divideButton)
+operatorContainer.appendChild(equalButton)
 
-buttonContainer.appendChild(plusButton)
-buttonContainer.appendChild(subtractButton)
-buttonContainer.appendChild(multiplyButton)
-buttonContainer.appendChild(divideButton)
-buttonContainer.appendChild(equalButton)
-buttonContainer.appendChild(clearButton)
-
-for (let i = 0; i < 10; i++) {
+const MAX_DISPLAY_LENGTH = 12
+for (let i = 9; i >= 0; i--) {
   const digitButton = document.createElement("button")
   digitButton.textContent = i
   digitButton.addEventListener("click", () => {
@@ -122,10 +137,30 @@ for (let i = 0; i < 10; i++) {
       displayText.textContent = i
       operatorClicked = false
     } else {
-      displayText.textContent += i
+      if (displayText.textContent.length < MAX_DISPLAY_LENGTH) {
+        displayText.textContent += i
+      }
     }
   })
-  buttonContainer.appendChild(digitButton)
+  digitContainer.appendChild(digitButton)
+}
+digitContainer.appendChild(decimalButton)
+digitContainer.appendChild(clearButton)
+
+buttonContainer.appendChild(digitContainer)
+buttonContainer.appendChild(operatorContainer)
+container.appendChild(buttonContainer)
+
+function handleBackspace() {
+  displayText.textContent = displayText.textContent.slice(0, -1)
 }
 
-container.appendChild(buttonContainer)
+const numbers = "0123456789"
+document.addEventListener("keydown", (event) => {
+  if (event.key == "Backspace") {
+    handleBackspace()
+    event.preventDefault()
+  } else if (numbers.includes(event.key)) {
+    displayText.textContent += event.key
+  }
+})
