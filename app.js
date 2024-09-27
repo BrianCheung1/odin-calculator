@@ -50,7 +50,7 @@ function divide(a, b) {
   if (b === 0) {
     return "Can't Divide By Zero"
   }
-  return Math.round((a / b) * 100) / 100
+  return a / b
 }
 
 function operate(first, second, operator) {
@@ -79,11 +79,17 @@ function determineFirstNumber() {
       }
     }
   } else if (!isFirstNumber) {
-    secondNumber = parseFloat(displayText.textContent)
-    let result = operate(firstNumber, secondNumber, operator)
-    displayText.textContent = result
-    firstNumber = result
-    secondNumber = 0
+    if (displayText.textContent !== "") {
+      secondNumber = parseFloat(displayText.textContent)
+      let result = operate(firstNumber, secondNumber, operator)
+      if (result == "Can't Divide By Zero") {
+        displayText.textContent = "Can't Divide By Zero"
+      } else {
+        displayText.textContent = Math.round(result * 100) / 100
+        firstNumber = result
+        secondNumber = 0
+      }
+    }
   }
   operatorClicked = true
   isFirstNumber = false
@@ -165,10 +171,38 @@ function handleBackspace() {
 
 const numbers = "0123456789"
 document.addEventListener("keydown", (event) => {
+  console.log(event.key)
   if (event.key == "Backspace") {
     handleBackspace()
-    event.preventDefault()
   } else if (numbers.includes(event.key)) {
-    displayText.textContent += event.key
+    if (operatorClicked) {
+      displayText.textContent = event.key
+      operatorClicked = false
+    } else {
+      if (displayText.textContent.length < MAX_DISPLAY_LENGTH) {
+        displayText.textContent += event.key
+      }
+    }
+  } else if (event.key === "+") {
+    operator = "+"
+    determineFirstNumber()
+  } else if (event.key === "-") {
+    operator = "-"
+    determineFirstNumber()
+  } else if (event.key === "*") {
+    operator = "*"
+    determineFirstNumber()
+  } else if (event.key === "/") {
+    operator = "/"
+    determineFirstNumber()
+  } else if (event.key === "=" || event.key === "Enter") {
+    determineFirstNumber()
+    clearAll()
+  } else if (event.key === ".") {
+    if (!display.textContent.includes(".")) {
+      displayText.textContent += "."
+      decimalButton.disabled = true
+    }
   }
+  event.preventDefault()
 })
