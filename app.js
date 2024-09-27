@@ -1,3 +1,39 @@
+const container = document.querySelector("#container")
+const display = document.createElement("div")
+const displayText = document.createElement("p")
+const digitContainer = document.createElement("div")
+const operatorContainer = document.createElement("div")
+const buttonContainer = document.createElement("div")
+const plusButton = document.createElement("button")
+const subtractButton = document.createElement("button")
+const multiplyButton = document.createElement("button")
+const divideButton = document.createElement("button")
+const equalButton = document.createElement("button")
+const clearButton = document.createElement("button")
+const decimalButton = document.createElement("button")
+
+display.classList.add("display")
+displayText.textContent = ""
+display.appendChild(displayText)
+container.appendChild(display)
+digitContainer.classList.add("digit-container")
+operatorContainer.classList.add("operator-container")
+buttonContainer.classList.add("button-container")
+plusButton.textContent = "+"
+subtractButton.textContent = "-"
+multiplyButton.textContent = "*"
+divideButton.textContent = "/"
+equalButton.textContent = "="
+clearButton.textContent = "CLEAR"
+decimalButton.textContent = "."
+
+let firstNumber = 0
+let operator = ""
+let secondNumber = 0
+let operatorClicked = false
+let isFirstNumber = true
+let isEqualClicked = false
+
 function add(a, b) {
   return a + b
 }
@@ -17,12 +53,6 @@ function divide(a, b) {
   return Math.round((a / b) * 100) / 100
 }
 
-let firstNumber = 0
-let operator = ""
-let secondNumber = 0
-let operatorClicked = false
-let isFirstNumber = true
-
 function operate(first, second, operator) {
   if (operator == "+") {
     return add(first, second)
@@ -34,39 +64,12 @@ function operate(first, second, operator) {
     return divide(first, second)
   }
 }
-const container = document.querySelector("#container")
-const display = document.createElement("div")
-display.classList.add("display")
-const displayText = document.createElement("p")
-displayText.textContent = ""
-display.appendChild(displayText)
-container.appendChild(display)
-
-const digitContainer = document.createElement("div")
-digitContainer.classList.add("digit-container")
-
-const operatorContainer = document.createElement("div")
-operatorContainer.classList.add("operator-container")
-
-const buttonContainer = document.createElement("div")
-buttonContainer.classList.add("button-container")
-
-const plusButton = document.createElement("button")
-plusButton.textContent = "+"
-const subtractButton = document.createElement("button")
-subtractButton.textContent = "-"
-const multiplyButton = document.createElement("button")
-multiplyButton.textContent = "*"
-const divideButton = document.createElement("button")
-divideButton.textContent = "/"
-const equalButton = document.createElement("button")
-equalButton.textContent = "="
-const clearButton = document.createElement("button")
-clearButton.textContent = "CLEAR"
-const decimalButton = document.createElement("button")
-decimalButton.textContent = "."
 
 function determineFirstNumber() {
+  if (operatorClicked) {
+    isEqualClicked = false
+    return
+  }
   if (isFirstNumber) {
     if (displayText.textContent !== "") {
       if (display.textContent === "Can't Divide By Zero") {
@@ -91,6 +94,7 @@ function clearAll() {
   secondNumber = 0
   operator = ""
   isFirstNumber = true
+  operatorClicked = false
   decimalButton.disabled = false
 }
 
@@ -113,6 +117,7 @@ divideButton.addEventListener("click", () => {
 equalButton.addEventListener("click", () => {
   determineFirstNumber()
   clearAll()
+  isEqualClicked = true
 })
 clearButton.addEventListener("click", () => {
   displayText.textContent = ""
@@ -122,6 +127,7 @@ decimalButton.addEventListener("click", () => {
   displayText.textContent += "."
   decimalButton.disabled = true
 })
+
 operatorContainer.appendChild(plusButton)
 operatorContainer.appendChild(subtractButton)
 operatorContainer.appendChild(multiplyButton)
@@ -133,9 +139,10 @@ for (let i = 9; i >= 0; i--) {
   const digitButton = document.createElement("button")
   digitButton.textContent = i
   digitButton.addEventListener("click", () => {
-    if (operatorClicked) {
+    if (operatorClicked || isEqualClicked) {
       displayText.textContent = i
       operatorClicked = false
+      isEqualClicked = false
     } else {
       if (displayText.textContent.length < MAX_DISPLAY_LENGTH) {
         displayText.textContent += i
@@ -144,6 +151,7 @@ for (let i = 9; i >= 0; i--) {
   })
   digitContainer.appendChild(digitButton)
 }
+
 digitContainer.appendChild(decimalButton)
 digitContainer.appendChild(clearButton)
 
