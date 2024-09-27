@@ -162,22 +162,29 @@ digitContainer.append(flipButton)
 digitContainer.append(percentButton)
 
 const MAX_DISPLAY_LENGTH = 12
-for (let i = 9; i >= 0; i--) {
-  const digitButton = document.createElement("button")
-  digitButton.textContent = i
-  digitButton.addEventListener("click", () => {
-    if (operatorClicked || isFunctionClicked) {
-      displayText.textContent = i
-      operatorClicked = false
-      isFunctionClicked = false
-    } else {
-      if (displayText.textContent.length < MAX_DISPLAY_LENGTH) {
-        displayText.textContent += i
+
+function createDigits(start, end) {
+  for (let i = start; i <= end; i++) {
+    const digitButton = document.createElement("button")
+    digitButton.textContent = i
+    digitButton.addEventListener("click", () => {
+      if (operatorClicked || isFunctionClicked) {
+        displayText.textContent = i
+        operatorClicked = false
+        isFunctionClicked = false
+      } else {
+        if (displayText.textContent.length < MAX_DISPLAY_LENGTH) {
+          displayText.textContent += i
+        }
       }
-    }
-  })
-  digitContainer.appendChild(digitButton)
+    })
+    digitContainer.appendChild(digitButton)
+  }
 }
+createDigits(7, 9)
+createDigits(4, 6)
+createDigits(1, 3)
+createDigits(0, 0)
 
 digitContainer.appendChild(decimalButton)
 digitContainer.appendChild(clearButton)
