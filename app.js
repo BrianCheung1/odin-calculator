@@ -11,6 +11,9 @@ const divideButton = document.createElement("button")
 const equalButton = document.createElement("button")
 const clearButton = document.createElement("button")
 const decimalButton = document.createElement("button")
+const backspaceButton = document.createElement("button")
+const flipButton = document.createElement("button")
+const percentButton = document.createElement("button")
 
 display.classList.add("display")
 displayText.textContent = ""
@@ -26,13 +29,16 @@ divideButton.textContent = "/"
 equalButton.textContent = "="
 clearButton.textContent = "CLEAR"
 decimalButton.textContent = "."
+backspaceButton.textContent = "DELETE"
+flipButton.textContent = "+/-"
+percentButton.textContent = "%"
 
 let firstNumber = 0
 let operator = ""
 let secondNumber = 0
 let operatorClicked = false
 let isFirstNumber = true
-let isEqualClicked = false
+let isFunctionClicked = false
 
 function add(a, b) {
   return a + b
@@ -123,7 +129,7 @@ divideButton.addEventListener("click", () => {
 equalButton.addEventListener("click", () => {
   determineFirstNumber()
   clearAll()
-  isEqualClicked = true
+  isFunctionClicked = true
 })
 clearButton.addEventListener("click", () => {
   displayText.textContent = ""
@@ -133,6 +139,17 @@ decimalButton.addEventListener("click", () => {
   displayText.textContent += "."
   decimalButton.disabled = true
 })
+backspaceButton.addEventListener("click", () => {
+  displayText.textContent = displayText.textContent.slice(0, -1)
+})
+flipButton.addEventListener("click", () => {
+  isFunctionClicked = true
+  displayText.textContent = (parseFloat(displayText.textContent) * -1)
+})
+percentButton.addEventListener("click", () => {
+  isFunctionClicked = true
+  displayText.textContent = (parseFloat(displayText.textContent) / 100)
+})
 
 operatorContainer.appendChild(plusButton)
 operatorContainer.appendChild(subtractButton)
@@ -140,15 +157,19 @@ operatorContainer.appendChild(multiplyButton)
 operatorContainer.appendChild(divideButton)
 operatorContainer.appendChild(equalButton)
 
+digitContainer.append(backspaceButton)
+digitContainer.append(flipButton)
+digitContainer.append(percentButton)
+
 const MAX_DISPLAY_LENGTH = 12
 for (let i = 9; i >= 0; i--) {
   const digitButton = document.createElement("button")
   digitButton.textContent = i
   digitButton.addEventListener("click", () => {
-    if (operatorClicked || isEqualClicked) {
+    if (operatorClicked || isFunctionClicked) {
       displayText.textContent = i
       operatorClicked = false
-      isEqualClicked = false
+      isFunctionClicked = false
     } else {
       if (displayText.textContent.length < MAX_DISPLAY_LENGTH) {
         displayText.textContent += i
